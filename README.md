@@ -35,3 +35,8 @@ This will import the TTM rate for USD to JPY conversion on December 15, 2023, di
 
 <img width="831" alt="image" src="https://github.com/making/usd-to-jpy/assets/106908/1eeaeaf5-bb3e-4875-8c76-eabf812d6e7e">
 
+
+## OpenAPI Spec
+
+* [Swagger UI](https://petstore.swagger.io/?url=https://raw.githubusercontent.com/making/usd-to-jpy/main/openapi.yaml)
+* [Redoc](https://redocly.github.io/redoc/?url=https://raw.githubusercontent.com/making/usd-to-jpy/main/openapi.yaml)
