@@ -18,9 +18,9 @@ dump() {
     iconv -f SHIFT_JISX0213 -t UTF-8 /tmp/quote.txt | grep USD > /tmp/usd.txt
     # Create directory in the format yyyy/mm/dd
     mkdir -p "$year/$month/$day"
-    cat /tmp/usd.txt | awk '{print $3}' > $year/$month/$day/TTS
-    cat /tmp/usd.txt | awk '{print $4}' > $year/$month/$day/TTB
-    cat /tmp/usd.txt | awk '{print $5}' > $year/$month/$day/TTM
+    cat /tmp/usd.txt | awk '{print $3}' | tr -d '\r' | tr -d '\n' > $year/$month/$day/TTS
+    cat /tmp/usd.txt | awk '{print $4}' | tr -d '\r' | tr -d '\n' > $year/$month/$day/TTB
+    cat /tmp/usd.txt | awk '{print $5}' | tr -d '\r' | tr -d '\n' > $year/$month/$day/TTM
     rm -f /tmp/quote.txt /tmp/usd.txt
   else
     # If curl returns 404 or other errors, return from the function
