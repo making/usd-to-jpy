@@ -4,23 +4,30 @@
 dump() {
   # Extract year, month, and day
   year=$(date -d "$1" '+%Y')
+  yy=$(date -d "$1" '+%y')
   month=$(date -d "$1" '+%m')
   day=$(date -d "$1" '+%d')
 
-  # Output the date in yyyy-mm-dd format
-  echo "$year-$month-$day"
+  # Output the date in yymmdd format
+  echo "${yy}${month}${day}"
 
   # Perform a curl request to a specified URL
-  url="https://www.mizuhobank.co.jp/market/quote/data/quote_${year}${month}${day}.txt"
+  url="https://www.murc-kawasesouba.jp/fx/past/index.php?id=${yy}${month}${day}"
   curl --fail --silent "$url" > /tmp/quote.txt
   if [ $? -eq 0 ]; then
     # If curl succeeds, continue
-    iconv -f SHIFT_JISX0213 -t UTF-8 /tmp/quote.txt | grep USD > /tmp/usd.txt
+    cat /tmp/quote.txt | grep USD -m 1 -A 2| grep -oP '(?<=t_right">)\d+\.\d+(?= )' > /tmp/usd.txt
     # Create directory in the format yyyy/mm/dd
     mkdir -p "$year/$month/$day"
-    cat /tmp/usd.txt | awk '{print $3}' | tr -d '\r' | tr -d '\n' > $year/$month/$day/TTS
-    cat /tmp/usd.txt | awk '{print $4}' | tr -d '\r' | tr -d '\n' > $year/$month/$day/TTB
-    cat /tmp/usd.txt | awk '{print $5}' | tr -d '\r' | tr -d '\n' > $year/$month/$day/TTM
+    TTS=$(cat /tmp/usd.txt | sed -n '1p' | tr -d '\r' | tr -d '\n')
+    if [ -z $TTS ]; then
+      return
+    fi
+    TTB=$(cat /tmp/usd.txt | sed -n '2p' | tr -d '\r' | tr -d '\n')
+    TTM=$(awk "BEGIN {printf \"%.2f\", ($TTS + $TTB) / 2}")
+    echo -n $TTS > $year/$month/$day/TTS
+    echo -n $TTM > $year/$month/$day/TTM
+    echo -n $TTB > $year/$month/$day/TTB
     rm -f /tmp/quote.txt /tmp/usd.txt
   else
     # If curl returns 404 or other errors, return from the function
@@ -30,10 +37,10 @@ dump() {
 }
 
 # Starting date
-start_date="2024-03-25"
+start_date="2024-04-01"
 
 # Ending date
-end_date="2024-06-05"
+end_date="2024-12-12"
 
 # Iterate over each day
 current_date=$start_date
