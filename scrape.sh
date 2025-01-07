@@ -37,10 +37,10 @@ dump() {
 }
 
 # Starting date
-start_date="2024-12-12"
+start_date="2024-12-14"
 
 # Ending date
-end_date="2024-12-16"
+end_date="2025-01-06"
 
 # Iterate over each day
 current_date=$start_date
