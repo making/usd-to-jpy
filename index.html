@@ -10,18 +10,18 @@
     
     <h2>URL Format</h2>
     <p>To use the API, structure your request URL as follows:</p>
-    <pre><code>https://imadeit.github.io/usd-to-jpy/yyyy/mm/dd/{TTS,TTB,TTM}</code></pre>
+    <pre><code>https://making.github.io/usd-to-jpy/yyyy/mm/dd/{TTS,TTB,TTM}</code></pre>
     <p>Replace <code>yyyy</code>, <code>mm</code>, and <code>dd</code> with the year, month, and day respectively. Choose between <code>TTS</code>, <code>TTB</code>, and <code>TTM</code> for the rate type.</p>
     
     <h2>Example</h2>
     <p>To get the TTM rate for December 15, 2023, use a command like this:</p>
-    <pre><code>$ curl https://imadeit.github.io/usd-to-jpy/2023/12/15/TTM
+    <pre><code>$ curl https://making.github.io/usd-to-jpy/2023/12/15/TTM
 142.45</code></pre>
     <p>This command will return the TTM rate for USD to JPY conversion as of that date.</p>
 
     <h2>Usage in Google Sheets</h2>
     <p>This API can also be used in Google Sheets with the <code>IMPORTDATA</code> function. To do this, simply use the URL format in your <code>IMPORTDATA</code> formula. For example:</p>
-    <pre><code>=IMPORTDATA("https://imadeit.github.io/usd-to-jpy/2023/12/15/TTM")</code></pre>
+    <pre><code>=IMPORTDATA("https://making.github.io/usd-to-jpy/2023/12/15/TTM")</code></pre>
     <p>This will import the TTM rate for USD to JPY conversion on December 15, 2023, directly into your Google Sheets document.</p>
     <img width="831" alt="image" src="https://github.com/making/usd-to-jpy/assets/106908/1eeaeaf5-bb3e-4875-8c76-eabf812d6e7e">
 </body>
