@@ -7,7 +7,7 @@ The `usd-to-jpy` is an API for converting between US Dollars (USD) and Japanese 
 To use the API, structure your request URL as follows:
 
 ```
-https://making.github.io/usd-to-jpy/yyyy/mm/dd/{TTS,TTB,TTM}
+https://imadeit.github.io/usd-to-jpy/yyyy/mm/dd/{TTS,TTB,TTM}
 ```
 
 Replace `yyyy`, `mm`, and `dd` with the year, month, and day respectively. Choose between `TTS`, `TTB`, and `TTM` for the rate type.
@@ -17,7 +17,7 @@ Replace `yyyy`, `mm`, and `dd` with the year, month, and day respectively. Choos
 To get the TTM rate for December 15, 2023, use a command like this:
 
 ```
-$ curl https://making.github.io/usd-to-jpy/2023/12/15/TTM
+$ curl https://imadeit.github.io/usd-to-jpy/2023/12/15/TTM
 142.45
 ```
 
@@ -28,7 +28,7 @@ This command will return the TTM rate for USD to JPY conversion as of that date.
 This API can also be used in Google Sheets with the `IMPORTDATA` function. To integrate it, simply use the URL format in your `IMPORTDATA` formula. For example:
 
 ```
-=IMPORTDATA("https://making.github.io/usd-to-jpy/2023/12/15/TTM")
+=IMPORTDATA("https://imadeit.github.io/usd-to-jpy/2023/12/15/TTM")
 ```
 
 This will import the TTM rate for USD to JPY conversion on December 15, 2023, directly into your Google Sheets document.
