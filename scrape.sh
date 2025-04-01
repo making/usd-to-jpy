@@ -1,5 +1,12 @@
 #!/bin/bash
 #set -x
+
+# Starting date
+start_date="2025-03-17"
+
+# Ending date
+end_date="2025-04-01"
+
 # Function to create a directory for a given date, output the date, and perform a curl request
 dump() {
   # Extract year, month, and day
@@ -35,12 +42,6 @@ dump() {
     return
   fi
 }
-
-# Starting date
-start_date="2025-01-17"
-
-# Ending date
-end_date="2025-12-31"
 
 # Iterate over each day
 current_date=$start_date
