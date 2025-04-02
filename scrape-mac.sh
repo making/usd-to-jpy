@@ -5,7 +5,7 @@
 start_date="2025-01-01"
 
 # Ending date
-end_date="2025-04-03"
+end_date="2025-12-31"
 
 # Function to create a directory for a given date, output the date, and perform a curl request
 dump() {
@@ -19,8 +19,10 @@ dump() {
     yy=$(date -j -f "%Y-%m-%d" "$1" '+%y')
     month=$(date -j -f "%Y-%m-%d" "$1" '+%m')
     day=$(date -j -f "%Y-%m-%d" "$1" '+%d')
-    # Output the date in yymmdd format
-    echo "${yy}${month}${day}"
+    if [ -d "$year/$month/$day" ]; then
+        # echo "$year/$month/$day does exist."
+        return
+    fi
 
     # Perform a curl request to a specified URL
     url="https://www.murc-kawasesouba.jp/fx/past/index.php?id=${yy}${month}${day}"
@@ -43,6 +45,9 @@ dump() {
         echo -n $TTM > $year/$month/$day/TTM
         echo -n $TTB > $year/$month/$day/TTB
         rm -f /tmp/quote.txt /tmp/usd.txt
+        # Output the date in yymmdd format
+        echo "${yy}${month}${day}"
+
     else
         # If curl returns 404 or other errors, return from the function
         echo "Curl request failed for $url with error"
