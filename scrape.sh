@@ -5,7 +5,7 @@
 start_date="2025-03-17"
 
 # Ending date
-end_date="2025-04-01"
+end_date="2025-04-02"
 
 # Function to create a directory for a given date, output the date, and perform a curl request
 dump() {
