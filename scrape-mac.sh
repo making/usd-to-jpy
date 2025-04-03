@@ -2,10 +2,23 @@
 #set -x
 
 # Starting date
-start_date="2025-01-01"
+# start_date="2025-01-01" ## This is the fixed way, not smart enough.
+
+# Find the latest date folder
+latest_date=$(find . -type d -path "./*/*/*" | grep -E './[0-9]{4}/[0-9]{2}/[0-9]{2}$' | sort -r | head -n 1)
+if [[ -z "$latest_date" ]]; then
+    echo "No date folders found in YYYY/MM/DD format"
+    exit 1
+fi
+
+# Remove the leading ./
+latest_date="${latest_date#./}"
+# Format conversion from YYYY/MM/DD to YYYY-mm-dd
+start_date=$(echo "$latest_date" | tr '/' '-')
+# echo "Latest date folder found: $start_date"
 
 # Ending date
-end_date="2025-12-31"
+end_date="$(date "+%Y-%m-%d")" # "2025-12-31"
 
 # Function to create a directory for a given date, output the date, and perform a curl request
 dump() {
@@ -19,10 +32,6 @@ dump() {
     yy=$(date -j -f "%Y-%m-%d" "$1" '+%y')
     month=$(date -j -f "%Y-%m-%d" "$1" '+%m')
     day=$(date -j -f "%Y-%m-%d" "$1" '+%d')
-    if [ -d "$year/$month/$day" ]; then
-        # echo "$year/$month/$day does exist."
-        return
-    fi
 
     # Perform a curl request to a specified URL
     url="https://www.murc-kawasesouba.jp/fx/past/index.php?id=${yy}${month}${day}"
@@ -33,14 +42,21 @@ dump() {
         #cat /tmp/quote.txt | grep USD -m 1 -A 2| grep -oP '(?<=t_right">)\d+\.\d+(?= )' > /tmp/usd.txt
         # Mac
         cat /tmp/quote.txt | grep USD -m 1 -A 2| ggrep -oP '(?<=t_right">)\d+\.\d+(?= )' > /tmp/usd.txt
-        # Create directory in the format yyyy/mm/dd
-        mkdir -p "$year/$month/$day"
         TTS=$(cat /tmp/usd.txt | sed -n '1p' | tr -d '\r' | tr -d '\n')
         if [ -z $TTS ]; then
             return
         fi
         TTB=$(cat /tmp/usd.txt | sed -n '2p' | tr -d '\r' | tr -d '\n')
         TTM=$(awk "BEGIN {printf \"%.2f\", ($TTS + $TTB) / 2}")
+        # Check folder existance.
+        if [ -d "$year/$month/$day" ]; then
+            # echo "$year/$month/$day does exist."
+            return
+        fi
+        
+        # Create directory in the format yyyy/mm/dd
+        mkdir -p "$year/$month/$day"
+        
         echo -n $TTS > $year/$month/$day/TTS
         echo -n $TTM > $year/$month/$day/TTM
         echo -n $TTB > $year/$month/$day/TTB
