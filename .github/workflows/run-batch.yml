@@ -1,0 +1,77 @@
+name: Run Batch
+
+on:
+  schedule:
+  - cron: '0 14 * * *' # Everyday at 23:00 JST
+  workflow_dispatch: # Manually triggered via GitHub UI
+    inputs:
+      startDate:
+        description: Start date for the batch job (YYYY-MM-DD)
+        required: true
+      endDate:
+        description: End date for the batch job (YYYY-MM-DD)
+        required: true
+permissions:
+  contents: write
+  id-token: write
+jobs:
+  test-and-push:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Check out repository
+      uses: actions/checkout@v3
+
+    - name: Set up Java
+      uses: actions/setup-java@v3
+      with:
+        java-version: '21'
+        distribution: 'temurin'
+        cache: 'maven'
+
+    - name: Run Maven package
+      run: |
+        current_date=$(TZ=Asia/Tokyo date '+%Y-%m-%d')
+        ./mvnw --no-transfer-progress clean package -DskipTests
+
+    - name: Import Secrets
+      id: import-secrets
+      uses: hashicorp/vault-action@v3.3.0
+      with:
+        exportToken: true
+        exportEnv: true
+        method: jwt
+        url: ${{ secrets.VAULT_ADDR }}
+        role: cicd
+        secrets: |
+          kv/data/cicd/spring_batch_metadata SPRING_DATASOURCE_URL;
+          kv/data/cicd/spring_batch_metadata SPRING_DATASOURCE_USERNAME;
+          kv/data/cicd/spring_batch_metadata SPRING_DATASOURCE_PASSWORD;
+
+    - name: Run the scraper
+      run: |
+        export TZ=Asia/Tokyo
+        START_DATE="${{ github.event.inputs.startDate }}"
+        END_DATE="${{ github.event.inputs.endDate }}"
+        DAYS_TO_SUBTRACT=$(( $(date +%u) - 1 ))
+        MONDAY_DATE=$(date -d "$(date +%Y-%m-%d) -$days_to_subtract days" +%Y-%m-%d)
+        if [ -z "$START_DATE" ]; then
+          START_DATE=$MONDAY_DATE
+        fi
+        if [ -z "$END_DATE" ]; then
+          END_DATE=$(TZ=Asia/Tokyo date '+%Y-%m-%d')
+        fi
+        java -Duser.timezone=Asia/Tokyo -Duser.country=JP -Duser.language=ja -Dfile.encoding=UTF-8 -jar target/usd-to-jpy-0.0.1-SNAPSHOT.jar --spring.datasource.driver-class-name=org.postgresql.Driver startDate=${START_DATE} endDate=${END_DATE}
+
+    - name: Configure Git user
+      run: |
+        git config --global user.name "github-actions"
+        git config --global user.email "github-actions@github.com"
+
+    - name: Commit and push report
+      run: |
+        git checkout main
+        git pull origin main
+        git add -A
+        git commit -m "Update for $(TZ=Asia/Tokyo date '+%Y-%m-%d')" --allow-empty
+        git push origin main
