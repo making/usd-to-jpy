@@ -15,7 +15,7 @@ permissions:
   contents: write
   id-token: write
 jobs:
-  test-and-push:
+  run-batch-and-push:
     runs-on: ubuntu-latest
 
     steps:
@@ -31,7 +31,6 @@ jobs:
 
     - name: Run Maven package
       run: |
-        current_date=$(TZ=Asia/Tokyo date '+%Y-%m-%d')
         ./mvnw --no-transfer-progress clean package -DskipTests
 
     - name: Import Secrets
@@ -48,7 +47,7 @@ jobs:
           kv/data/cicd/spring_batch_metadata SPRING_DATASOURCE_USERNAME;
           kv/data/cicd/spring_batch_metadata SPRING_DATASOURCE_PASSWORD;
 
-    - name: Run the scraper
+    - name: Run the batch
       run: |
         export TZ=Asia/Tokyo
         START_DATE="${{ github.event.inputs.startDate }}"
