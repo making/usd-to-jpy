@@ -58,7 +58,7 @@ jobs:
         fi
         
         if [ -z "$END_DATE" ]; then
-          END_DATE=$(date '+%Y-%m-%d')
+          END_DATE=$(date -d "yesterday" +%Y-%m-%d)
         fi
         
         java -Duser.timezone=Asia/Tokyo -Duser.country=JP -Duser.language=ja -Dfile.encoding=UTF-8 -jar target/usd-to-jpy-0.0.1-SNAPSHOT.jar --spring.datasource.driver-class-name=org.postgresql.Driver startDate=${START_DATE} endDate=${END_DATE}
