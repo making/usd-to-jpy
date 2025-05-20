@@ -2,7 +2,7 @@ name: Run Batch
 
 on:
   schedule:
-  - cron: '0 1 * * *' # Everyday at 10:00 JST
+  - cron: '0 3 * * *' # Everyday at 12:00 JST
   workflow_dispatch: # Manually triggered via GitHub UI
     inputs:
       startDate:
