@@ -2,7 +2,7 @@ name: Run Batch
 
 on:
   schedule:
-  - cron: '0 14 * * *' # Everyday at 23:00 JST
+  - cron: '0 1 * * *' # Everyday at 10:00 JST
   workflow_dispatch: # Manually triggered via GitHub UI
     inputs:
       startDate:
@@ -61,7 +61,7 @@ jobs:
           END_DATE=$(date -d "yesterday" +%Y-%m-%d)
         fi
         
-        java -Duser.timezone=Asia/Tokyo -Duser.country=JP -Duser.language=ja -Dfile.encoding=UTF-8 -jar target/usd-to-jpy-0.0.1-SNAPSHOT.jar --spring.datasource.driver-class-name=org.postgresql.Driver startDate=${START_DATE} endDate=${END_DATE}
+        java -Duser.timezone=Asia/Tokyo -Duser.country=JP -Duser.language=ja -Dfile.encoding=UTF-8 -jar target/usd-to-jpy-0.0.1-SNAPSHOT.jar --spring.datasource.driver-class-name=org.postgresql.Driver --spring.output.ansi.enabled=always startDate=${START_DATE} endDate=${END_DATE}
 
     - name: Configure Git user
       run: |
