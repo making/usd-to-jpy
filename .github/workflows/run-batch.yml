@@ -53,13 +53,16 @@ jobs:
         START_DATE="${{ github.event.inputs.startDate }}"
         END_DATE="${{ github.event.inputs.endDate }}"
         DAYS_TO_SUBTRACT=$(( $(date +%u) - 1 ))
-        MONDAY_DATE=$(date -d "$(date +%Y-%m-%d) -$days_to_subtract days" +%Y-%m-%d)
+        MONDAY_DATE=$(date -d "$(date +%Y-%m-%d) -${DAYS_TO_SUBTRACT} days" +%Y-%m-%d)
+        
         if [ -z "$START_DATE" ]; then
           START_DATE=$MONDAY_DATE
         fi
+        
         if [ -z "$END_DATE" ]; then
-          END_DATE=$(TZ=Asia/Tokyo date '+%Y-%m-%d')
+          END_DATE=$(date '+%Y-%m-%d')
         fi
+        
         java -Duser.timezone=Asia/Tokyo -Duser.country=JP -Duser.language=ja -Dfile.encoding=UTF-8 -jar target/usd-to-jpy-0.0.1-SNAPSHOT.jar --spring.datasource.driver-class-name=org.postgresql.Driver startDate=${START_DATE} endDate=${END_DATE}
 
     - name: Configure Git user
