@@ -7,10 +7,8 @@ on:
     inputs:
       startDate:
         description: Start date for the batch job (YYYY-MM-DD)
-        required: true
       endDate:
         description: End date for the batch job (YYYY-MM-DD)
-        required: true
 permissions:
   contents: write
   id-token: write
