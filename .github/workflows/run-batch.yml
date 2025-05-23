@@ -61,7 +61,7 @@ jobs:
           END_DATE=$(date -d "yesterday" +%Y-%m-%d)
         fi
         
-        java -Duser.timezone=Asia/Tokyo -Duser.country=JP -Duser.language=ja -Dfile.encoding=UTF-8 -jar target/usd-to-jpy-0.0.1-SNAPSHOT.jar --spring.datasource.driver-class-name=org.postgresql.Driver --spring.output.ansi.enabled=always startDate=${START_DATE} endDate=${END_DATE}
+        java -Duser.timezone=Asia/Tokyo -Duser.country=JP -Duser.language=ja -Dfile.encoding=UTF-8 -jar target/usd-to-jpy-0.0.1-SNAPSHOT.jar --spring.datasource.driver-class-name=org.postgresql.Driver --spring.output.ansi.enabled=always startDate=${START_DATE},java.time.LocalDate endDate=${END_DATE},java.time.LocalDate
 
     - name: Configure Git user
       run: |
